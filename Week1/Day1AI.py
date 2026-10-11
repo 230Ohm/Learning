@@ -18,14 +18,24 @@ F = np.array([
     [0.0, 0.0, 0.0, 1.0],
 ])
 
-# Simulate by applying F once per time step.
+# Save the initial state, then every updated state.
 state = initial_state.copy()
+history = [state.copy()]
+
 for _ in range(steps):
     state = F @ state
+    history.append(state.copy())
+
+# Each row contains the state at one time step.
+truth = np.array(history)            # Shape: (101, 4)
+time = np.arange(steps + 1) * dt      # Times: 0.0 through 10.0 seconds
 
 # Independent analytical answer: position = starting position + velocity * time.
 expected_position = initial_state[:2] + initial_state[2:] * duration
 expected_state = np.concatenate((expected_position, initial_state[2:]))
 
-print("Simulated final state:  ", state)
-print("Analytical final state: ", expected_state)
+# Print only when running Day1.py directly, not when importing it.
+if __name__ == "__main__":
+    print("Simulated final state:  ", state)
+    print("Analytical final state: ", expected_state)
+    print("Trajectory shape:      ", truth.shape)
